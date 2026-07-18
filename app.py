@@ -1,77 +1,83 @@
 from tkinter import *
-import random
-import string
-
 
 window = Tk()
-window.title("Password Generator")
-window.geometry("400x350")
+window.title("My Calculator")
+window.state("zoomed")   # Full screen
 window.config(bg="lightblue")
 
 
-def generate():
-    length = int(size_entry.get())
-
-    characters = string.ascii_letters + string.digits + "@#$%&*"
-
-    password = ""
-
-    for i in range(length):
-        password += random.choice(characters)
-
-    result.delete(0, END)
-    result.insert(0, password)
+# Display screen
+screen = Entry(window, font=("Calibri", 30), bd=5, justify="right")
+screen.pack(fill=X, padx=50, pady=40, ipady=20)
 
 
-def clear():
-    result.delete(0, END)
-    size_entry.delete(0, END)
+def press(num):
+    screen.insert(END, num)
 
 
-# Title
-Label(window,
-      text="Password Generator",
-      font=("Arial", 20),
-      bg="lightblue").pack(pady=20)
+def solve():
+    try:
+        result = eval(screen.get())
+        screen.delete(0, END)
+        screen.insert(0, result)
+    except:
+        screen.delete(0, END)
+        screen.insert(0, "Error")
 
 
-# Password length
-Label(window,
-      text="Enter Password Length",
-      font=("Arial", 12),
-      bg="lightblue").pack()
-
-size_entry = Entry(window,
-                   font=("Arial", 15),
-                   justify="center")
-size_entry.pack(pady=10)
+def clear_screen():
+    screen.delete(0, END)
 
 
-# Result
-result = Entry(window,
-               font=("Arial", 15),
-               justify="center")
-result.pack(pady=15)
+# Button area
+button_frame = Frame(window, bg="lightblue")
+button_frame.pack(expand=True)
 
 
-# Buttons
-Button(window,
-       text="Generate Password",
-       font=("Arial", 12),
-       command=generate).pack(pady=5)
+buttons = [
+    "7", "8", "9", "/",
+    "4", "5", "6", "*",
+    "1", "2", "3", "-",
+    "0", ".", "=", "+"
+]
 
 
+row = 0
+col = 0
+
+for item in buttons:
+
+    if item == "=":
+        Button(button_frame,
+               text=item,
+               font=("Calibri", 25),
+               width=8,
+               height=2,
+               command=solve).grid(row=row, column=col, padx=10, pady=10)
+
+    else:
+        Button(button_frame,
+               text=item,
+               font=("Calibri", 25),
+               width=8,
+               height=2,
+               command=lambda x=item: press(x)).grid(row=row, column=col, padx=10, pady=10)
+
+    col += 1
+
+    if col == 4:
+        col = 0
+        row += 1
+
+
+# Clear button
 Button(window,
        text="Clear",
-       font=("Arial", 12),
-       command=clear).pack(pady=5)
-
-
-# Name
-Label(window,
-      text="Created by Shradha Yadav",
-      bg="lightblue",
-      font=("Arial", 10)).pack(side=BOTTOM, pady=10)
+       font=("Calibri", 20),
+       width=15,
+       height=2,
+       bg="orange",
+       command=clear_screen).pack(pady=20)
 
 
 window.mainloop()
